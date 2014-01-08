@@ -34,8 +34,10 @@ function init() {
     container.appendChild( stats.domElement );
 
     // add camera
-    camera = new THREE.PerspectiveCamera(33, window.innerWidth / window.innerHeight, 1, 10000);
-    camera.position.z = 700;
+    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 100000);
+    camera.position.x = 0;
+    camera.position.y = 700;
+    camera.position.z = -700;
 
     // add scene
     scene = new THREE.Scene();
@@ -51,6 +53,11 @@ function init() {
     setWindowSize();
 
     initLine();     // init the line
+
+    // add grid
+    var grid = new THREE.GridHelper( 300, 30 );
+    grid.material.color = new THREE.Color( 0x32cd32 );
+    scene.add( grid );
 }
 
 function update() {
