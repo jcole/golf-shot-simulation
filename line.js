@@ -13,17 +13,22 @@
     }
 
     window.updateLine = function() {
-        var maxPoints = 25;
+        var maxPoints = 50;
         var spacing = 20;
 
         if (points.length == 0 || points.length > maxPoints) {
             return;
         }
 
+        var deltaY = parseInt(Math.random() * spacing);
+        if (points.length > maxPoints / 2.0) {
+            deltaY = -1 * deltaY;
+        }
+
         var lastPoint = points[points.length - 1];
         var newPoint = new THREE.Vector3(
           lastPoint.x + parseInt((0.5 - Math.random()) * spacing),
-          lastPoint.y + parseInt(Math.random() * spacing),
+          lastPoint.y + deltaY,
           lastPoint.z + parseInt(Math.random() * spacing)
         );
         addPoint(newPoint);
