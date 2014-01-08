@@ -52,7 +52,7 @@ function init() {
     mouseY = 0;
     setWindowSize();
 
-    initLine();     // init the line
+    initLine(new THREE.Vector3(0, 0, -250));     // init the line
 
     // add grid
     var grid = new THREE.GridHelper( 300, 30 );

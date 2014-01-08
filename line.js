@@ -7,12 +7,13 @@
     var line;
     var particles;
 
-    window.initLine = function() {
-        addPoint(new THREE.Vector3(0, 0, 0));
+    window.initLine = function(point) {
+        points = [];
+        addPoint(point);
     }
 
     window.updateLine = function() {
-        var maxPoints = 20;
+        var maxPoints = 25;
         var spacing = 20;
 
         if (points.length == 0 || points.length > maxPoints) {
@@ -21,7 +22,7 @@
 
         var lastPoint = points[points.length - 1];
         var newPoint = new THREE.Vector3(
-          lastPoint.x + parseInt(Math.random() * spacing),
+          lastPoint.x + parseInt((0.5 - Math.random()) * spacing),
           lastPoint.y + parseInt(Math.random() * spacing),
           lastPoint.z + parseInt(Math.random() * spacing)
         );
