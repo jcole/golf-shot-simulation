@@ -54,9 +54,13 @@ function init() {
 
     initLine(new THREE.Vector3(0, 0, -250));     // init the line
 
-    // add grid
+    // add two grids
     var grid = new THREE.GridHelper( 300, 30 );
     grid.material.color = new THREE.Color( 0x32cd32 );
+    scene.add( grid );
+    var grid = new THREE.GridHelper( 300, 30 );
+    grid.material.color = new THREE.Color( 0x32cd32 );
+    grid.position.z = 600;
     scene.add( grid );
 }
 
