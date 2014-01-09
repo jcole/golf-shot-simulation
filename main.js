@@ -125,9 +125,9 @@ var shot;
 
 function initRender() {
     // add ground grid
-    var grids = DrawLib.getGrids();
-    scene.add(grids[0]);
-    scene.add(grids[1]);
+    var grid = DrawLib.getGrid(300, 600, 60, new THREE.Color( 0x32cd32 ));
+    grid.position.z = 300;
+    scene.add(grid);
 
     var initPoint = new THREE.Vector3(0, 0, -200);
     shot = new Shot(initPoint);

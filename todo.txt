@@ -1,5 +1,4 @@
+- can you extend line instead of removing/re-adding
+
 - mouse zoom
 
-- rectangle grid instead of two grids
-
-- can you extend line instead of removing/re-adding

@@ -4,15 +4,23 @@
 
     }
 
-    DrawLib.getGrids = function() {
-        var grid = new THREE.GridHelper( 300, 30 );
-        grid.material.color = new THREE.Color( 0x32cd32 );
+    DrawLib.getGrid = function(sizeX, sizeZ, step, color) {
+        var geometry = new THREE.Geometry();
+        var material = new THREE.LineBasicMaterial( { vertexColors: THREE.VertexColors } );
 
-        var grid2 = new THREE.GridHelper( 300, 30 );
-        grid2.material.color = new THREE.Color( 0x32cd32 );
-        grid2.position.z = 600;
+        for ( var i = - sizeX; i <= sizeX; i += step ) {
+            for ( var j = - sizeZ; j <= sizeZ; j += step ) {
+                geometry.vertices.push(
+                    new THREE.Vector3( - sizeX, 0, j ), new THREE.Vector3( sizeX, 0, j ),
+                    new THREE.Vector3( i, 0, - sizeZ ), new THREE.Vector3( i, 0, sizeZ )
+                );
 
-        return [grid, grid2];
+                geometry.colors.push( color, color, color, color );
+            }
+        }
+
+        var grid = new THREE.Line(geometry, material, THREE.LinePieces );
+        return grid;
     }
 
     DrawLib.getLine = function(points) {
