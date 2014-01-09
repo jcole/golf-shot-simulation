@@ -1,10 +1,9 @@
-var scene;
-
 (function () {
 
 // three components
-var camera;
 var renderer;
+var scene;
+var camera;
 
 // stats
 var stats;
@@ -14,6 +13,10 @@ var mouseX;
 var mouseY;
 var windowHalfY;
 var windowHalfY;
+
+// attributes
+var initCameraY = 300;
+var initCameraZ = -700;
 
 function init() {
     // add renderer
@@ -36,14 +39,15 @@ function init() {
     // add camera
     camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 100000);
     camera.position.x = 0;
-    camera.position.y = 700;
-    camera.position.z = -700;
+    camera.position.y = initCameraY;
+    camera.position.z = initCameraZ;
 
     // add scene
     scene = new THREE.Scene();
 
     // add handlers
     document.addEventListener('mousemove', onDocumentMouseMove, false);
+    document.addEventListener('mousewheel', onDocumentMouseWheel, false);
     document.addEventListener('touchstart', onDocumentTouchStart, false);
     document.addEventListener('touchmove', onDocumentTouchMove, false);
     window.addEventListener('resize', onWindowResize, false);
@@ -52,29 +56,21 @@ function init() {
     mouseY = 0;
     setWindowSize();
 
-    initLine(new THREE.Vector3(0, 0, -250));     // init the line
-
-    // add two grids
-    var grid = new THREE.GridHelper( 300, 30 );
-    grid.material.color = new THREE.Color( 0x32cd32 );
-    scene.add( grid );
-    var grid = new THREE.GridHelper( 300, 30 );
-    grid.material.color = new THREE.Color( 0x32cd32 );
-    grid.position.z = 600;
-    scene.add( grid );
+    initRender(); // project-specific
 }
 
 function update() {
     requestAnimationFrame(update);
 
+    updateRender();
+
     updateCamera();
-    updateLine(); // update the line
     stats.update();
 }
 
 function updateCamera() {
     camera.position.x += (mouseX - camera.position.x) * .05;
-    camera.position.y += (-mouseY + 200 - camera.position.y) * .05;
+    camera.position.y += (-mouseY + 100 + initCameraY - camera.position.y) * .05;
 
     camera.lookAt(scene.position);
 
@@ -84,6 +80,11 @@ function updateCamera() {
 function onDocumentMouseMove(event) {
     mouseX = event.clientX - windowHalfX;
     mouseY = event.clientY - windowHalfY;
+}
+
+function onDocumentMouseWheel( event ) {
+    console.log('zoom');
+    // zoom here
 }
 
 function onDocumentTouchStart(event) {
@@ -114,6 +115,38 @@ function onWindowResize() {
     camera.updateProjectionMatrix();
 
     renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+// project-specific logic
+var points = [];
+var line;
+var particles;
+var shot;
+
+function initRender() {
+    // add ground grid
+    var grids = DrawLib.getGrids();
+    scene.add(grids[0]);
+    scene.add(grids[1]);
+
+    var initPoint = new THREE.Vector3(0, 0, -200);
+    shot = new Shot(initPoint);
+}
+
+function updateRender() {
+    if (shot.points.length > points.length) {
+        points.push(shot.points[points.length]);
+
+        var newline = DrawLib.getLine(points);
+        scene.remove(line);
+        line = newline;
+        scene.add(line);
+
+        var newParticles = DrawLib.getParticles(points);
+        scene.remove(particles);
+        particles = newParticles;
+        scene.add(particles);
+    }
 }
 
 // begin
