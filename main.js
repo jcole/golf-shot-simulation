@@ -75,22 +75,28 @@ function initShot() {
     grid.position.z = 300;
     scene.add(grid);
 
-    var initPoint = new THREE.Vector3(0, 0, -200);
-    shot = new Shot(initPoint);
+    shot = new Shot();
 }
 
 function updateShot() {
+    var initPoint = new THREE.Vector3(0, 0, -200);
+    var lineColor = new THREE.Color(0x99ffff);
+    var particleColor = new THREE.Color(0xff007f);
+    var interpolationNum = 2;
+
     if (shot.points.length > points.length) {
         points.push(shot.points[points.length]);
 
-        var newline = DrawLib.getLine(points);
+        var newline = DrawLib.getSplinedLine(points, interpolationNum, lineColor);
         scene.remove(line);
         line = newline;
+        line.position = initPoint;
         scene.add(line);
 
-        var newParticles = DrawLib.getParticles(points);
+        var newParticles = DrawLib.getParticles(points, particleColor);
         scene.remove(particles);
         particles = newParticles;
+        particles.position = initPoint;
         scene.add(particles);
     }
 }

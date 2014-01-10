@@ -1,7 +1,7 @@
 (function () {
 
-    window.Shot = function(initPoint) {
-        this.points = [initPoint];
+    window.Shot = function() {
+        this.points = [new THREE.Vector3(0,0,0)];
  
         var spacing = 20;
         var numPoints = 50;
