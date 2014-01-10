@@ -1,22 +1,17 @@
 (function () {
 
-// three components
+// three framework components
 var renderer;
 var scene;
 var camera;
-
-// stats
+var controls;
 var stats;
 
-// for window
-var mouseX;
-var mouseY;
-var windowHalfY;
-var windowHalfY;
-
-// attributes
-var initCameraY = 300;
-var initCameraZ = -700;
+// project-specific logic
+var points = [];
+var line;
+var particles;
+var shot;
 
 function init() {
     // add renderer
@@ -36,94 +31,45 @@ function init() {
     stats.domElement.style.top = '0px';
     container.appendChild( stats.domElement );
 
-    // add camera
-    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 100000);
-    camera.position.x = 0;
-    camera.position.y = initCameraY;
-    camera.position.z = initCameraZ;
-
     // add scene
     scene = new THREE.Scene();
 
-    // add handlers
-    document.addEventListener('mousemove', onDocumentMouseMove, false);
-    document.addEventListener('mousewheel', onDocumentMouseWheel, false);
-    document.addEventListener('touchstart', onDocumentTouchStart, false);
-    document.addEventListener('touchmove', onDocumentTouchMove, false);
-    window.addEventListener('resize', onWindowResize, false);
-
-    mouseX = 0;
-    mouseY = 0;
-    setWindowSize();
-
-    initRender(); // project-specific
-}
-
-function update() {
-    requestAnimationFrame(update);
-
-    updateRender();
-
-    updateCamera();
-    stats.update();
-}
-
-function updateCamera() {
-    camera.position.x += (mouseX - camera.position.x) * .05;
-    camera.position.y += (-mouseY + 100 + initCameraY - camera.position.y) * .05;
-
+    // add camera: field of view, aspect ratio, start distance, max distance
+    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 20000);
+    camera.position.x = 0;
+    camera.position.y = 300;
+    camera.position.z = -700;
     camera.lookAt(scene.position);
 
+    // Add OrbitControls so that we can pan around with the mouse.
+    controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+    // window sizing
+    onWindowResize(); // set initial size
+    window.addEventListener('resize', onWindowResize, false);     // add handlers
+
+    // project-specific setup
+    initShot();
+}
+
+function animate() {
+    requestAnimationFrame(animate);
+
+    updateShot(); // project-specific update
+    controls.update();
+    stats.update();
     renderer.render(scene, camera);
 }
 
-function onDocumentMouseMove(event) {
-    mouseX = event.clientX - windowHalfX;
-    mouseY = event.clientY - windowHalfY;
-}
-
-function onDocumentMouseWheel( event ) {
-    console.log('zoom');
-    // zoom here
-}
-
-function onDocumentTouchStart(event) {
-    if (event.touches.length > 1) {
-        event.preventDefault();
-        mouseX = event.touches[0].pageX - windowHalfX;
-        mouseY = event.touches[0].pageY - windowHalfY;
-    }
-}
-
-function onDocumentTouchMove(event) {
-    if (event.touches.length == 1) {
-        event.preventDefault();
-        mouseX = event.touches[0].pageX - windowHalfX;
-        mouseY = event.touches[0].pageY - windowHalfY;
-    }
-}
-
-function setWindowSize() {
-    windowHalfX = window.innerWidth / 2;
-    windowHalfY = window.innerHeight / 2;    
-}
-
 function onWindowResize() {
-    setWindowSize();
-
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
-
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
 // project-specific logic
-var points = [];
-var line;
-var particles;
-var shot;
 
-function initRender() {
+function initShot() {
     // add ground grid
     var grid = DrawLib.getGrid(300, 600, 60, new THREE.Color( 0x32cd32 ));
     grid.position.z = 300;
@@ -133,7 +79,7 @@ function initRender() {
     shot = new Shot(initPoint);
 }
 
-function updateRender() {
+function updateShot() {
     if (shot.points.length > points.length) {
         points.push(shot.points[points.length]);
 
@@ -151,6 +97,6 @@ function updateRender() {
 
 // begin
 init();
-update();
+animate();
 
 })();
