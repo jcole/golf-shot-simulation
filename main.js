@@ -85,7 +85,8 @@ function updateShot() {
     var interpolationNum = 2;
 
     if (shot.points.length > points.length) {
-        points.push(shot.points[points.length]);
+        var position = shot.points[points.length].position;
+        points.push(position);
 
         var newline = DrawLib.getSplinedLine(points, interpolationNum, lineColor);
         scene.remove(line);
