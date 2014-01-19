@@ -81,7 +81,7 @@ function initShot() {
 function updateShot() {
     var initPoint = new THREE.Vector3(0, 0, -200);
     var lineColor = new THREE.Color(0x99ffff);
-    var particleColor = new THREE.Color(0xff007f);
+    var particleColor = new THREE.Color(0xff0000); //(0xff007f);
     var interpolationNum = 2;
 
     if (shot.points.length > points.length) {

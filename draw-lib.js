@@ -43,7 +43,7 @@
     DrawLib.getParticles = function(points, particleColor) {
         var geometry = new THREE.Geometry();
         geometry.vertices = points;
-        var particles = new THREE.ParticleSystem(geometry, new THREE.ParticleSystemMaterial( { color: particleColor, size: 8, opacity: 1.0 } )); 
+        var particles = new THREE.ParticleSystem(geometry, new THREE.ParticleSystemMaterial( { color: particleColor, size: 12, opacity: 1.0 } )); 
 
         return particles;
     }
