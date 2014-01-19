@@ -5,14 +5,16 @@
     }
 
     DrawLib.getGrid = function(sizeX, sizeZ, step, color) {
+        var adjSizeX = sizeX / 2.0;
+        var adjSizeZ = sizeZ / 2.0;
         var geometry = new THREE.Geometry();
         var material = new THREE.LineBasicMaterial( { vertexColors: THREE.VertexColors } );
 
-        for ( var i = - sizeX; i <= sizeX; i += step ) {
-            for ( var j = - sizeZ; j <= sizeZ; j += step ) {
+        for ( var i = - adjSizeX; i <= adjSizeX; i += step ) {
+            for ( var j = - adjSizeZ; j <= adjSizeZ; j += step ) {
                 geometry.vertices.push(
-                    new THREE.Vector3( - sizeX, 0, j ), new THREE.Vector3( sizeX, 0, j ),
-                    new THREE.Vector3( i, 0, - sizeZ ), new THREE.Vector3( i, 0, sizeZ )
+                    new THREE.Vector3( - adjSizeX, 0, j ), new THREE.Vector3( adjSizeX, 0, j ),
+                    new THREE.Vector3( i, 0, - adjSizeZ ), new THREE.Vector3( i, 0, adjSizeZ )
                 );
 
                 geometry.colors.push( color, color, color, color );
@@ -43,7 +45,7 @@
     DrawLib.getParticles = function(points, particleColor) {
         var geometry = new THREE.Geometry();
         geometry.vertices = points;
-        var particles = new THREE.ParticleSystem(geometry, new THREE.ParticleSystemMaterial( { color: particleColor, size: 12, opacity: 1.0 } )); 
+        var particles = new THREE.ParticleSystem(geometry, new THREE.ParticleSystemMaterial( { color: particleColor, size: 6, opacity: 1.0 } )); 
 
         return particles;
     }

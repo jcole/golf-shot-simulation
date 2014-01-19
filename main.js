@@ -37,8 +37,8 @@ function init() {
     // add camera: field of view, aspect ratio, start distance, max distance
     camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 20000);
     camera.position.x = 0;
-    camera.position.y = 300;
-    camera.position.z = -700;
+    camera.position.y = 200;
+    camera.position.z = -300;
     camera.lookAt(scene.position);
 
     // Add OrbitControls so that we can pan around with the mouse.
@@ -71,15 +71,15 @@ function onWindowResize() {
 
 function initShot() {
     // add ground grid
-    var grid = DrawLib.getGrid(300, 600, 60, new THREE.Color( 0x32cd32 ));
-    grid.position.z = 300;
+    var grid = DrawLib.getGrid(200, 300, 10, new THREE.Color( 0x32cd32 ));
+  //  grid.position.z = 0;
     scene.add(grid);
 
     shot = new Shot();
 }
 
 function updateShot() {
-    var initPoint = new THREE.Vector3(0, 0, -200);
+    var initPoint = new THREE.Vector3(0, 0, -150);
     var lineColor = new THREE.Color(0x99ffff);
     var particleColor = new THREE.Color(0xff0000); //(0xff007f);
     var interpolationNum = 2;
