@@ -1,8 +1,11 @@
 (function () {
 
-    window.Shot = function() {
+    window.Shot = function(options) {
         this.points = [];
         
+        // customizable attributes
+        this.dragCoefficient = options.dragCoefficient;
+
         initPosition = new THREE.Vector3(0,0,0);
         initVelocity = new THREE.Vector3(4.0, 70.0, 50.0);
         this.projectShot(initPosition, initVelocity);
@@ -38,8 +41,7 @@
         var mass = 0.0459; // 1.62 ounces
         var gravityAccel = g = new THREE.Vector3(0,-9.8,0); // 9.8 m/s^2
 
-        var Cd = 0.008; // coefficient of drag
-        var dragAccel = currentPoint.velocity.clone().multiplyScalar(-1 * Cd / mass);
+        var dragAccel = currentPoint.velocity.clone().multiplyScalar(-1 * this.dragCoefficient / mass);
 
         var totalAccel = (new THREE.Vector3(0,0,0)).add(gravityAccel).add(dragAccel);
 
