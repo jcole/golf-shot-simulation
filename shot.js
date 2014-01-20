@@ -8,27 +8,36 @@
         // parameters
         this.mass = 0.0459; // kg; from 1.62 ounces
         this.gravityMagnitude = -9.8; // 9.8 m/s^2
-        this.dragCoefficient = 0.5; //options.dragCoefficient;
+        this.dragCoefficient = 0.0;//0.5; //options.dragCoefficient;
         this.airDensity = 1.2041; // kg/m^3
         this.crossSectionalArea = 0.04267 * Math.PI / 4; //m^2
-        this.liftCoefficient = 1.1 * 0.0001;
+        this.liftCoefficient = 0.00001;
         this.initSpeedMPH = 120 ; // mph
-        this.initVerticalAngleDegrees = 30;
+        this.initVerticalAngleDegrees = 45;
         this.initHorizontalAngleDegrees = 0;
+        this.initBackspinRPM = 5000; // backspin
+        this.initSpinAngle = 45;
 
         // initial velocity        
         initPoint.velocity = this.getInitialVelocity(this.initSpeedMPH, this.initVerticalAngleDegrees, this.initHorizontalAngleDegrees);
 
         // initial angular velocity (spin rate)
-        var spinY = 0;
-        var spinX = 0;
-        var spinZ = 0;
-        initPoint.angularVelocity = new THREE.Vector3(spinX * 2 * Math.PI / 60, spinY * 2 * Math.PI / 60, spinZ * Math.PI / 60);
+        initPoint.angularVelocity = this.getInitialSpin(this.initBackspinRPM, this.initSpinAngle);
 
         // for simulation
         this.dt = 0.01; // seconds
 
         this.projectShot(initPoint);
+    }
+
+    Shot.prototype.getInitialSpin = function(spinRPM, spinAngle) {
+        var spin = new THREE.Vector3(0, 0, 0);
+        spin.x = -1; // full backspin
+        spin.y = Math.sin(spinAngle * Math.PI / 180);
+
+        spin.normalize().multiplyScalar(spinRPM * 2 * Math.PI /60);
+
+        return spin;
     }
 
     Shot.prototype.getInitialVelocity = function(speedMPH, verticalDegrees, horizontalDegrees) {    
@@ -87,7 +96,7 @@
 
     Shot.prototype.angularDecay = function(currentPoint) {
         // TODO
-        return 0.94;
+        return 1.0;//0.94;
     }
 
     window.ShotPoint = function() {
