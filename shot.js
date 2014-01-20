@@ -10,17 +10,32 @@
         this.gravityMagnitude = -9.8; // 9.8 m/s^2
         this.dragCoefficient = 0; //options.dragCoefficient;
         this.liftCoefficient = 1.1 * 0.0001;
+        this.initSpeedMPH = 90 ; // mph
+        this.initVerticalAngleDegrees = 40;
+        this.initHorizontalAngleDegrees = 4;
 
-        // initial velocity
-        initPoint.velocity = new THREE.Vector3(0.0, 25.0, 45.0);
+        // initial velocity        
+        initPoint.velocity = this.getInitialVelocity(this.initSpeedMPH, this.initVerticalAngleDegrees, this.initHorizontalAngleDegrees);
 
         // initial angular velocity (spin rate)
-        initPoint.angularVelocity = new THREE.Vector3(-1000 * 2 * Math.PI / 60, -450 * 2 * Math.PI / 60, -340 * Math.PI / 60);
+        var spinY = 0;
+        var spinX = 0;
+        var spinZ = 0;
+        initPoint.angularVelocity = new THREE.Vector3(spinX * 2 * Math.PI / 60, spinY * 2 * Math.PI / 60, spinZ * Math.PI / 60);
 
         // for simulation
-        this.dt = 0.3; // seconds
+        this.dt = 0.001; // seconds
 
         this.projectShot(initPoint);
+    }
+
+    Shot.prototype.getInitialVelocity = function(speedMPH, verticalDegrees, horizontalDegrees) {    
+        var velocity = new THREE.Vector3(0, 0, 0);
+        velocity.x = Math.sin(horizontalDegrees * Math.PI / 180);
+        velocity.y = Math.sin(verticalDegrees * Math.PI / 180);
+        velocity.z = Math.cos(verticalDegrees * Math.PI / 180);
+
+        velocity.normalize().multiplyScalar(speedMPH * 0.44704); // MPH to mps
     }
 
     Shot.prototype.projectShot = function(initPoint) {    
@@ -28,9 +43,15 @@
         var lastPoint = initPoint.clone();
         this.points.push(lastPoint); 
 
+        var pointIndex = 0;
+        var interpolationSize = 0.25 / this.dt; // record every half-second
+
         while(true) {
             var newPoint = lastPoint.clone();
-            this.points.push(newPoint);    
+            // record every 10th point
+            if ((pointIndex+=1) % interpolationSize == 0) {
+                this.points.push(newPoint);    
+            }
 
             // calculate velcoity change            
             var accel = this.getAcceleration(lastPoint);
