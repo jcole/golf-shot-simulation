@@ -14,7 +14,11 @@ var shot;
 var line;
 var particles;
 var shotControl = {
-    dragCoefficient: 0.008,
+    initSpeedMPH: 140,
+    initVerticalAngleDegrees: 45,
+    initHorizontalAngleDegrees: 9,
+    initBackspinRPM: 6000,
+    initSpinAngle: 45,
     shoot: beginShot
 }
 
@@ -64,7 +68,11 @@ function init() {
 
     // add dat.gui
     gui = new dat.GUI();
-    gui.add(shotControl, 'dragCoefficient', 0, 0.02);
+    gui.add(shotControl, 'initSpeedMPH', 50, 150);
+    gui.add(shotControl, 'initVerticalAngleDegrees', 0, 90);
+    gui.add(shotControl, 'initHorizontalAngleDegrees', -45, 45);
+    gui.add(shotControl, 'initBackspinRPM', 0, 6000);
+    gui.add(shotControl, 'initSpinAngle', -45, 45);
     gui.add(shotControl, 'shoot');
 
     // window sizing

@@ -22,11 +22,11 @@
         this.airDensity = 1.2041; // kg/m^3
 
         // initial shot attributes
-        this.initSpeedMPH = 120;
-        this.initVerticalAngleDegrees = 45;
-        this.initHorizontalAngleDegrees = 9;
-        this.initBackspinRPM = 6000;
-        this.initSpinAngle = 45;
+        this.initSpeedMPH = options.initSpeedMPH;
+        this.initVerticalAngleDegrees = options.initVerticalAngleDegrees;
+        this.initHorizontalAngleDegrees = options.initHorizontalAngleDegrees;
+        this.initBackspinRPM = options.initBackspinRPM;
+        this.initSpinAngle = options.initSpinAngle;
 
         // initial velocity        
         initPoint.velocity = this.getInitialVelocity(this.initSpeedMPH, this.initVerticalAngleDegrees, this.initHorizontalAngleDegrees);
