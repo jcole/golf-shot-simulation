@@ -5,17 +5,27 @@
         var initPoint = new ShotPoint();
         initPoint.position = new THREE.Vector3(0,0,0);
 
-        // parameters
+        // simulation properties
+        this.dt = 0.01; // seconds
+
+        // golf ball properties
         this.mass = 0.0459; // kg; from 1.62 ounces
-        this.gravityMagnitude = -9.8; // 9.8 m/s^2
-        this.dragCoefficient = 0.0;//0.5; //options.dragCoefficient;
-        this.airDensity = 1.2041; // kg/m^3
         this.crossSectionalArea = 0.04267 * Math.PI / 4; //m^2
-        this.liftCoefficient = 0.00001;
-        this.initSpeedMPH = 120 ; // mph
+
+        // golf ball aerodynamics properties
+        this.dragCoefficient = 0.4; //options.dragCoefficient;
+        this.liftCoefficient = 0.00001; // made this up?
+        this.spinDecayRateConstant = 0.1; // made this up?
+
+        // nature
+        this.gravityMagnitude = -9.8; // 9.8 m/s^2
+        this.airDensity = 1.2041; // kg/m^3
+
+        // initial shot attributes
+        this.initSpeedMPH = 120;
         this.initVerticalAngleDegrees = 45;
-        this.initHorizontalAngleDegrees = 0;
-        this.initBackspinRPM = 5000; // backspin
+        this.initHorizontalAngleDegrees = 9;
+        this.initBackspinRPM = 6000;
         this.initSpinAngle = 45;
 
         // initial velocity        
@@ -23,9 +33,6 @@
 
         // initial angular velocity (spin rate)
         initPoint.angularVelocity = this.getInitialSpin(this.initBackspinRPM, this.initSpinAngle);
-
-        // for simulation
-        this.dt = 0.01; // seconds
 
         this.projectShot(initPoint);
     }
@@ -42,7 +49,7 @@
 
     Shot.prototype.getInitialVelocity = function(speedMPH, verticalDegrees, horizontalDegrees) {    
         var velocity = new THREE.Vector3(0, 0, 0);
-        velocity.x = Math.sin(horizontalDegrees * Math.PI / 180);
+        velocity.x = Math.sin(-1 * horizontalDegrees * Math.PI / 180);
         velocity.y = Math.sin(verticalDegrees * Math.PI / 180);
         velocity.z = Math.cos(verticalDegrees * Math.PI / 180);
 
@@ -66,8 +73,8 @@
             newPoint.position.add(newPoint.velocity.clone().multiplyScalar(this.dt));
 
             // calculate spin rate decay
-            var decayRate = this.angularDecay(newPoint);
-            newPoint.angularVelocity.multiplyScalar(decayRate);
+            var decayRate = this.angularDecayVector(newPoint);
+            newPoint.angularVelocity.add(decayRate);
 
             if (newPoint.position.y <= 0) {
                 break;
@@ -94,9 +101,10 @@
         return totalAccel;
     }
 
-    Shot.prototype.angularDecay = function(currentPoint) {
-        // TODO
-        return 1.0;//0.94;
+    Shot.prototype.angularDecayVector = function(currentPoint) {
+        var decay = currentPoint.angularVelocity.clone();
+        decay.normalize().negate().multiplyScalar(this.spinDecayRateConstant * this.dt);
+        return decay;
     }
 
     window.ShotPoint = function() {
