@@ -50,7 +50,7 @@ function init() {
     // add camera: field of view, aspect ratio, start distance, max distance
     camera = new THREE.PerspectiveCamera(45, renderWidth() / renderHeight(), 0.1, 20000);
     camera.position.x = 0;
-    camera.position.y = 200;
+    camera.position.y = 100;
     camera.position.z = -300;
     camera.lookAt(scene.position);
 
@@ -101,13 +101,14 @@ function updateShot() {
     var initPoint = new THREE.Vector3(0, 0, -150);
     var lineColor = new THREE.Color(0x99ffff);
     var particleColor = new THREE.Color(0xff0000); //(0xff007f);
-    var interpolationNum = 2;
+    var splineInterpolationNum = 2;
+    var shotPointsSampleRate = 0.1 / shot.dt; // show ever 0.2s
 
-    if (shot.points.length > points.length) {
-        var position = shot.points[points.length].position;
+    if (shot.points.length > points.length * shotPointsSampleRate) {
+        var position = shot.points[points.length * shotPointsSampleRate].position;
         points.push(position);
 
-        var newline = DrawLib.getSplinedLine(points, interpolationNum, lineColor);
+        var newline = DrawLib.getSplinedLine(points, splineInterpolationNum, lineColor);
         scene.remove(line);
         line = newline;
         line.position = initPoint;

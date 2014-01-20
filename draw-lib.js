@@ -36,7 +36,7 @@
           geometry.colors[i] = color;
         }
 
-        var material = new THREE.LineBasicMaterial({ color: color, opacity: 0.5, linewidth: 1 });
+        var material = new THREE.LineBasicMaterial({ color: color, opacity: 0.5, linewidth: 2 });
         var line = new THREE.Line(geometry, material);
 
         return line;   
@@ -45,7 +45,7 @@
     DrawLib.getParticles = function(points, particleColor) {
         var geometry = new THREE.Geometry();
         geometry.vertices = points;
-        var particles = new THREE.ParticleSystem(geometry, new THREE.ParticleSystemMaterial( { color: particleColor, size: 6, opacity: 1.0 } )); 
+        var particles = new THREE.ParticleSystem(geometry, new THREE.ParticleSystemMaterial( { color: particleColor, size: 3, opacity: 1.0 } )); 
 
         return particles;
     }
