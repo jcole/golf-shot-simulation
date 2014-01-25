@@ -1,5 +1,7 @@
 (function () {
 
+// Note: coordinate unit of 1 = 1 meter
+
 // three framework components
 var renderer;
 var scene;
@@ -53,19 +55,10 @@ function init() {
 
     // add camera: field of view, aspect ratio, start distance, max distance
     camera = new THREE.PerspectiveCamera(45, renderWidth() / renderHeight(), 0.1, 20000);
-    camera.position.x = 0;
-    camera.position.y = 16;
-    camera.position.z = -185;
     camera.lookAt(scene.position);
 
     // Add OrbitControls so that we can pan around with the mouse.
     controls = new THREE.OrbitControls(camera, renderer.domElement);
-
-    // add ground grid
-    var gridColor = new THREE.Color(0x69ba6d)
-    var grid = DrawLib.getGrid(100, 300, 10, gridColor);
-    // grid.position.z = 0;
-    scene.add(grid);
 
     // add dat.gui
     gui = new dat.GUI();
@@ -79,6 +72,8 @@ function init() {
     // window sizing
     onWindowResize(); // set initial size
     window.addEventListener('resize', onWindowResize, false);     // add handlers
+
+    addInitialElements();
 
     beginShot();
 }
@@ -101,13 +96,45 @@ function onWindowResize() {
     renderer.setSize(renderWidth(), renderHeight());
 }
 
+var sceneZOffset = -20;
+
+function addInitialElements() {
+    var gridWidth = 100;
+    var gridHeight = 300;
+
+    camera.position.x = 0;
+    camera.position.y = 10;
+    camera.position.z = sceneZOffset - 20;
+
+    // add ground grid
+    var gridColor = new THREE.Color(0x69ba6d)
+    var grid = DrawLib.getGrid(gridWidth, gridHeight, 10, gridColor);
+    grid.position.z = sceneZOffset + gridHeight/2.0;
+    scene.add(grid);
+
+    var textMesh = new THREE.MeshNormalMaterial({color: 0x00ff00});
+    var textGeometry = new THREE.TextGeometry("50m", {
+        size: 4,
+        height: 0.1,
+        curveSegments: 1,
+        font: "helvetiker"
+    });
+    textGeometry.computeBoundingBox();
+    textGeometry.computeVertexNormals();
+    var words = new THREE.Mesh(textGeometry, textMesh);
+    words.position.x = 60;
+    words.position.z = 50 + sceneZOffset - 0.5 * ( textGeometry.boundingBox.max.x - textGeometry.boundingBox.min.x );
+    words.rotation.y = -1 *Math.PI / 2;
+    scene.add(words);
+}
+
 function beginShot() {
     shot = new Shot(shotControl);
     points = [];
 }
 
 function updateShot() {
-    var initPoint = new THREE.Vector3(0, 0, -150);
+    var initPoint = new THREE.Vector3(0, 0, sceneZOffset);
     var lineColor = new THREE.Color(0xe34f4f);
     var splineInterpolationNum = 2;
     var shotPointsSampleRate = 0.4 / shot.dt; // show ever 0.2s
