@@ -23,6 +23,7 @@ var shotControl = {
     initSpinAngle: 45,
     shoot: beginShot
 }
+var sceneZOffset;
 
 function renderWidth() {
     return window.innerWidth - 50;
@@ -96,15 +97,17 @@ function onWindowResize() {
     renderer.setSize(renderWidth(), renderHeight());
 }
 
-var sceneZOffset = -20;
 
 function addInitialElements() {
     var gridWidth = 100;
     var gridHeight = 300;
 
+    sceneZOffset = -gridHeight/2.0;
+
+    // adjust camera position
     camera.position.x = 0;
-    camera.position.y = 10;
-    camera.position.z = sceneZOffset - 20;
+    camera.position.y = gridHeight/6;
+    camera.position.z = -gridHeight/2.0 * 1.5;
 
     // add ground grid
     var gridColor = new THREE.Color(0x69ba6d)
@@ -112,20 +115,36 @@ function addInitialElements() {
     grid.position.z = sceneZOffset + gridHeight/2.0;
     scene.add(grid);
 
-    var textMesh = new THREE.MeshNormalMaterial({color: 0x00ff00});
-    var textGeometry = new THREE.TextGeometry("50m", {
-        size: 4,
-        height: 0.1,
-        curveSegments: 1,
-        font: "helvetiker"
-    });
-    textGeometry.computeBoundingBox();
-    textGeometry.computeVertexNormals();
-    var words = new THREE.Mesh(textGeometry, textMesh);
-    words.position.x = 60;
-    words.position.z = 50 + sceneZOffset - 0.5 * ( textGeometry.boundingBox.max.x - textGeometry.boundingBox.min.x );
-    words.rotation.y = -1 *Math.PI / 2;
-    scene.add(words);
+    // add marker indicators
+    var markerColor = 0x00ffff;
+    var textMesh = new THREE.MeshNormalMaterial({color: markerColor});
+    var markerYardage = 0;
+    while(markerYardage < gridHeight) {
+        // text
+        markerYardage += 50;
+        var textGeometry = new THREE.TextGeometry(markerYardage + "m", {
+            size: 4,
+            height: 0.1,
+            curveSegments: 1,
+            font: "helvetiker"
+        });
+        textGeometry.computeBoundingBox();
+        textGeometry.computeVertexNormals();
+        var words = new THREE.Mesh(textGeometry, textMesh);
+        words.position.x = gridWidth/2.0 + 5;
+        words.position.z = markerYardage + sceneZOffset - 0.5 * ( textGeometry.boundingBox.max.x - textGeometry.boundingBox.min.x );
+        words.rotation.y = -1 *Math.PI / 2;
+        scene.add(words);
+
+        // line across grid
+        var pointA = new THREE.Vector3(-gridWidth/2.0, 0, markerYardage + sceneZOffset);
+        var pointB = new THREE.Vector3(gridWidth/2.0, 0, markerYardage + sceneZOffset);
+        var lineGeometry = new THREE.Geometry();
+        lineGeometry.vertices = [pointA, pointB];
+        var lineMaterial = new THREE.LineBasicMaterial({ color: markerColor, linewidth: 2 });
+        var markerLine = new THREE.Line(lineGeometry, lineMaterial);
+        scene.add(markerLine);
+    }
 }
 
 function beginShot() {
