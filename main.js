@@ -14,8 +14,8 @@ var shot;
 var line;
 var particles;
 var shotControl = {
-    initSpeedMPH: 140,
-    initVerticalAngleDegrees: 45,
+    initSpeedMPH: 100,
+    initVerticalAngleDegrees: 22,
     initHorizontalAngleDegrees: 9,
     initBackspinRPM: 6000,
     initSpinAngle: 45,
@@ -54,8 +54,8 @@ function init() {
     // add camera: field of view, aspect ratio, start distance, max distance
     camera = new THREE.PerspectiveCamera(45, renderWidth() / renderHeight(), 0.1, 20000);
     camera.position.x = 0;
-    camera.position.y = 100;
-    camera.position.z = -300;
+    camera.position.y = 16;
+    camera.position.z = -185;
     camera.lookAt(scene.position);
 
     // Add OrbitControls so that we can pan around with the mouse.
@@ -63,7 +63,7 @@ function init() {
 
     // add ground grid
     var gridColor = new THREE.Color(0x69ba6d)
-    var grid = DrawLib.getGrid(200, 300, 10, gridColor);
+    var grid = DrawLib.getGrid(100, 300, 10, gridColor);
     // grid.position.z = 0;
     scene.add(grid);
 
