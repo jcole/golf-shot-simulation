@@ -6,7 +6,7 @@
         initPoint.position = new THREE.Vector3(0,0,0);
 
         // simulation properties
-        this.dt = 0.01; // seconds
+        this.dt = options.dt; //seconds
 
         // golf ball properties
         this.mass = 0.0459; // kg; from 1.62 ounces

@@ -16,6 +16,8 @@ var shot;
 var line;
 var particles;
 var shotControl = {
+    dt: 0.001, //seconds
+    displaySpeed: 1.0, // display time multiplier
     initSpeedMPH: 100,
     initVerticalAngleDegrees: 22,
     initHorizontalAngleDegrees: 9,
@@ -24,6 +26,8 @@ var shotControl = {
     shoot: beginShot
 }
 var sceneZOffset;
+var displayStartTime;
+var displaySpeed;
 
 function renderWidth() {
     return window.innerWidth - 50;
@@ -68,6 +72,7 @@ function init() {
     gui.add(shotControl, 'initHorizontalAngleDegrees', -45, 45);
     gui.add(shotControl, 'initBackspinRPM', 0, 6000);
     gui.add(shotControl, 'initSpinAngle', -45, 45);
+    gui.add(shotControl, 'displaySpeed', 0, 5);
     gui.add(shotControl, 'shoot');
 
     // window sizing
@@ -99,15 +104,15 @@ function onWindowResize() {
 
 
 function addInitialElements() {
-    var gridWidth = 100;
+    var gridWidth = 60;
     var gridHeight = 300;
 
     sceneZOffset = -gridHeight/2.0;
 
     // adjust camera position
     camera.position.x = 0;
-    camera.position.y = gridHeight/6;
-    camera.position.z = -gridHeight/2.0 * 1.5;
+    camera.position.y = 20;
+    camera.position.z = -gridHeight/2.0 * 1.3;
 
     // add ground grid
     var gridColor = new THREE.Color(0x69ba6d)
@@ -148,18 +153,28 @@ function addInitialElements() {
 }
 
 function beginShot() {
-    shot = new Shot(shotControl);
     points = [];
+    shot = new Shot(shotControl);
+    points.push(shot.points[0]);
+    displaySpeed = shotControl.displaySpeed;
+    displayStartTime = Date.now();
 }
 
+var particlePoints = [];
+
 function updateShot() {
+    var now = Date.now();
+    var rawTimeElapsed = now - displayStartTime;
+    var displayTimeElapsed = Math.floor(displaySpeed * rawTimeElapsed);
     var initPoint = new THREE.Vector3(0, 0, sceneZOffset);
     var lineColor = new THREE.Color(0xe34f4f);
     var splineInterpolationNum = 2;
-    var shotPointsSampleRate = 0.4 / shot.dt; // show ever 0.2s
 
-    if (shot.points.length > points.length * shotPointsSampleRate) {
-        var position = shot.points[points.length * shotPointsSampleRate].position;
+    if (displayTimeElapsed <= shot.points.length) {            
+        var position = shot.points[displayTimeElapsed].position;        
+        if (position == null) {
+            return;
+        }
         points.push(position);
 
         var newline = DrawLib.getSplinedLine(points, splineInterpolationNum, lineColor);
@@ -168,11 +183,15 @@ function updateShot() {
         line.position = initPoint;
         scene.add(line);
 
-        var newParticles = DrawLib.getBallParticles(points);
-        scene.remove(particles);
-        particles = newParticles;
-        particles.position = initPoint;
-        scene.add(particles);
+        // if (points.length % 10 == 0) {
+        //     particlePoints.push(position);
+        //     var newParticles = DrawLib.getBallParticles(particlePoints);
+        //     scene.remove(particles);
+        //     particles = newParticles;
+        //     particles.position = initPoint;
+        //     scene.add(particles);
+        //     lastParticleTime = now;
+        // }
     }
 }
 
