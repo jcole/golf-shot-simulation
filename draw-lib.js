@@ -8,7 +8,7 @@
         var adjSizeX = sizeX / 2.0;
         var adjSizeZ = sizeZ / 2.0;
         var geometry = new THREE.Geometry();
-        var material = new THREE.LineBasicMaterial( { vertexColors: THREE.VertexColors } );
+        var material = new THREE.LineBasicMaterial( { vertexColors: THREE.VertexColors, opacity: 0.2 } );
 
         for ( var i = - adjSizeX; i <= adjSizeX; i += step ) {
             for ( var j = - adjSizeZ; j <= adjSizeZ; j += step ) {
@@ -36,16 +36,22 @@
           geometry.colors[i] = color;
         }
 
-        var material = new THREE.LineBasicMaterial({ color: color, opacity: 0.5, linewidth: 3 });
+        var material = new THREE.LineBasicMaterial({ color: color, opacity: 1.0, linewidth: 2 });
         var line = new THREE.Line(geometry, material);
 
         return line;   
     }
 
-    DrawLib.getParticles = function(points, particleColor) {
+    DrawLib.getBallParticles = function(points) {
         var geometry = new THREE.Geometry();
         geometry.vertices = points;
-        var particles = new THREE.ParticleSystem(geometry, new THREE.ParticleSystemMaterial( { color: particleColor, size: 2, opacity: 0.8 } )); 
+
+        var sprite = THREE.ImageUtils.loadTexture( "/assets/ball.png" );
+        var material = new THREE.ParticleSystemMaterial(  { size: 2, sizeAttenuation: true, map: sprite, transparent: true }  );
+        material.color.setHSL( 1.0, 0.2, 0.7 );
+
+        var particles = new THREE.ParticleSystem(geometry, material); 
+        particles.sortParticles = true;
 
         return particles;
     }

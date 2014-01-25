@@ -62,7 +62,8 @@ function init() {
     controls = new THREE.OrbitControls(camera, renderer.domElement);
 
     // add ground grid
-    var grid = DrawLib.getGrid(200, 300, 10, new THREE.Color( 0x32cd32 ));
+    var gridColor = new THREE.Color(0x69ba6d)
+    var grid = DrawLib.getGrid(200, 300, 10, gridColor);
     // grid.position.z = 0;
     scene.add(grid);
 
@@ -107,10 +108,9 @@ function beginShot() {
 
 function updateShot() {
     var initPoint = new THREE.Vector3(0, 0, -150);
-    var lineColor = new THREE.Color(0x99ffff);
-    var particleColor = new THREE.Color(0xff0000); //(0xff007f);
+    var lineColor = new THREE.Color(0xe34f4f);
     var splineInterpolationNum = 2;
-    var shotPointsSampleRate = 0.1 / shot.dt; // show ever 0.2s
+    var shotPointsSampleRate = 0.4 / shot.dt; // show ever 0.2s
 
     if (shot.points.length > points.length * shotPointsSampleRate) {
         var position = shot.points[points.length * shotPointsSampleRate].position;
@@ -122,7 +122,7 @@ function updateShot() {
         line.position = initPoint;
         scene.add(line);
 
-        var newParticles = DrawLib.getParticles(points, particleColor);
+        var newParticles = DrawLib.getBallParticles(points);
         scene.remove(particles);
         particles = newParticles;
         particles.position = initPoint;
