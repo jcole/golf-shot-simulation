@@ -9,6 +9,9 @@ var camera;
 var controls;
 var stats;
 var gui;
+var container;
+var containerWidth;
+var containerHeight;
 
 // project-specific logic
 var points;
@@ -29,27 +32,14 @@ var sceneZOffset;
 var displayStartTime;
 var displaySpeed;
 
-function renderWidth() {
-    return window.innerWidth - 50;
-}
-
-function renderHeight() {
-    return window.innerHeight - 50;
-}
-
 function init() {
     // add renderer
-    renderer = new THREE.WebGLRenderer({
-        antialias: true
-    });
-    renderer.setSize(renderWidth(), renderHeight());
+    renderer = new THREE.WebGLRenderer({ antialias: true });
 
     // add container
-    var container = document.createElement('div');
-    container.width = renderWidth();
-    container.height = renderHeight();
-    document.body.appendChild(container);
+    container = document.getElementById('display-container');
     container.appendChild(renderer.domElement);
+    calculateContainerWidthHeight();
 
     // add stats
     stats = new Stats();
@@ -59,14 +49,15 @@ function init() {
     scene = new THREE.Scene();
 
     // add camera: field of view, aspect ratio, start distance, max distance
-    camera = new THREE.PerspectiveCamera(45, renderWidth() / renderHeight(), 0.1, 20000);
+    camera = new THREE.PerspectiveCamera(45, containerWidth / containerHeight, 0.1, 20000);
     camera.lookAt(scene.position);
 
     // Add OrbitControls so that we can pan around with the mouse.
     controls = new THREE.OrbitControls(camera, renderer.domElement);
 
     // add dat.gui
-    gui = new dat.GUI();
+    gui = new dat.GUI({ autoPlace: false });
+    container.appendChild(gui.domElement);
     gui.add(shotControl, 'initSpeedMPH', 50, 150);
     gui.add(shotControl, 'initVerticalAngleDegrees', 0, 90);
     gui.add(shotControl, 'initHorizontalAngleDegrees', -45, 45);
@@ -96,12 +87,18 @@ function animate() {
     }
 }
 
-function onWindowResize() {
-    camera.aspect = renderWidth() / renderHeight();
-    camera.updateProjectionMatrix();
-    renderer.setSize(renderWidth(), renderHeight());
+function calculateContainerWidthHeight() {
+    var comStyle = window.getComputedStyle(container, null);
+    containerWidth = parseInt(comStyle.getPropertyValue("width"), 10);
+    containerHeight = parseInt(comStyle.getPropertyValue("height"), 10);
 }
 
+function onWindowResize() {
+    calculateContainerWidthHeight();
+    camera.aspect = containerWidth / containerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(containerWidth, containerHeight);
+}
 
 function addInitialElements() {
     var gridWidth = 60;
@@ -171,11 +168,11 @@ function updateShot() {
     var splineInterpolationNum = 2;
 
     if (displayTimeElapsed <= shot.points.length) {            
-        var position = shot.points[displayTimeElapsed].position;        
-        if (position == null) {
+        var point = shot.points[displayTimeElapsed];        
+        if (point == null) {
             return;
         }
-        var convertedPosition = position.clone().multiplyScalar(1.09361); // convert meters to yards
+        var convertedPosition = point.position.clone().multiplyScalar(1.09361); // convert meters to yards
         points.push(convertedPosition);
 
         // draw interpolated line

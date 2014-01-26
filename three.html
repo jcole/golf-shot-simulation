@@ -2,13 +2,24 @@
   <head>
     <title>Jeff Golf Shot Project</title>
     <style>
+      #display-container {
+        width: 100%;      
+        height: 100%;
+      }
       #stats {
         position: absolute;
-        top: 0px;
+        top: 15px;
+        left: 15px;
+      }
+      div .dg {
+        position: absolute;
+        top: 20px;
+        right: 20px;        
       }
     </style>
   </head>
   <body>
+    <div id="display-container"></div>
     <script src="stats.min.js"></script>
     <script src="dat.gui.min.js"></script>
     <script src="three.js"></script>
