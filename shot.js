@@ -15,7 +15,7 @@
         // golf ball aerodynamics properties
         this.dragCoefficient = 0.4; //options.dragCoefficient;
         this.liftCoefficient = 0.00001; // made this up?
-        this.spinDecayRateConstant = 0.1; // made this up?
+        this.spinDecayRateConstant = 23; // made this up?
 
         // nature
         this.gravityMagnitude = -9.8; // 9.8 m/s^2
