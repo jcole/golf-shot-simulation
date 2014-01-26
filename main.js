@@ -127,7 +127,7 @@ function addInitialElements() {
     while(markerYardage < gridHeight) {
         // text
         markerYardage += 50;
-        var textGeometry = new THREE.TextGeometry(markerYardage + "m", {
+        var textGeometry = new THREE.TextGeometry(markerYardage + "yd", {
             size: 4,
             height: 0.1,
             curveSegments: 1,
@@ -175,14 +175,17 @@ function updateShot() {
         if (position == null) {
             return;
         }
-        points.push(position);
+        var convertedPosition = position.clone().multiplyScalar(1.09361); // convert meters to yards
+        points.push(convertedPosition);
 
+        // draw interpolated line
         var newline = DrawLib.getSplinedLine(points, splineInterpolationNum, lineColor);
         scene.remove(line);
         line = newline;
         line.position = initPoint;
         scene.add(line);
 
+        // for adding particles
         // if (points.length % 10 == 0) {
         //     particlePoints.push(position);
         //     var newParticles = DrawLib.getBallParticles(particlePoints);
