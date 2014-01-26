@@ -6,6 +6,15 @@
         width: 100%;      
         height: 100%;
       }
+      #status-display {
+        position: absolute;
+        bottom: 100px;
+        right: 20px;
+        color: cyan;
+      }
+      #status-display ul {
+        list-style-type: none;
+      }
       #stats {
         position: absolute;
         top: 15px;
@@ -19,7 +28,17 @@
     </style>
   </head>
   <body>
-    <div id="display-container"></div>
+    <div id="display-container">
+      <div id="status-display">
+        <ul>
+          <li id="status-time"></li>
+          <li id="status-distance"></li>
+          <li id="status-speed"></li>
+          <li id="status-height"></li>
+          <li id="status-spin"></li>
+        </ul>
+      </div>
+    </div>
     <script src="stats.min.js"></script>
     <script src="dat.gui.min.js"></script>
     <script src="three.js"></script>

@@ -31,6 +31,16 @@ var shotControl = {
 var sceneZOffset;
 var displayStartTime;
 var displaySpeed;
+var statusElementTime;
+var statusElementSpeed;
+var statusElementHeight;
+var statusElementDistance;
+var statusElementSpin;
+
+// physics converstions
+var metersToYards = 1.09361;
+var metersPerSecToMPH = 2.23694;
+var radiansPerSecondToRPM = 9.54929659;
 
 function init() {
     // add renderer
@@ -40,6 +50,13 @@ function init() {
     container = document.getElementById('display-container');
     container.appendChild(renderer.domElement);
     calculateContainerWidthHeight();
+
+    // status elements
+    statusElementTime = document.getElementById('status-time');
+    statusElementSpeed = document.getElementById('status-speed');
+    statusElementHeight = document.getElementById('status-height');
+    statusElementDistance = document.getElementById('status-distance');
+    statusElementSpin = document.getElementById('status-spin');
 
     // add stats
     stats = new Stats();
@@ -167,12 +184,12 @@ function updateShot() {
     var lineColor = new THREE.Color(0xe34f4f);
     var splineInterpolationNum = 2;
 
-    if (displayTimeElapsed <= shot.points.length) {            
+    if (displayTimeElapsed <= shot.points.length) {       
         var point = shot.points[displayTimeElapsed];        
         if (point == null) {
             return;
         }
-        var convertedPosition = point.position.clone().multiplyScalar(1.09361); // convert meters to yards
+        var convertedPosition = point.position.clone().multiplyScalar(metersToYards); // convert meters to yards
         points.push(convertedPosition);
 
         // draw interpolated line
@@ -181,6 +198,12 @@ function updateShot() {
         line = newline;
         line.position = initPoint;
         scene.add(line);
+
+        statusElementTime.innerHTML =  (displayTimeElapsed / 1000).toFixed(1) + ' s';
+        statusElementSpeed.innerHTML =  (point.velocity.length() * metersPerSecToMPH).toFixed(1) + ' mph';
+        statusElementHeight.innerHTML =  convertedPosition.y.toFixed(0) + ' yds';
+        statusElementDistance.innerHTML =  convertedPosition.z.toFixed(0) + ' yds';
+        statusElementSpin.innerHTML =  (point.angularVelocity.length() * radiansPerSecondToRPM).toFixed(0) + ' rpm';
 
         // for adding particles
         // if (points.length % 10 == 0) {
