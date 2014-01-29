@@ -1,4 +1,0 @@
-- square particles
-
-- can you extend line instead of removing/re-adding
-

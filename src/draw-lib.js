@@ -46,7 +46,7 @@
         var geometry = new THREE.Geometry();
         geometry.vertices = points;
 
-        var sprite = THREE.ImageUtils.loadTexture( "/assets/ball.png" );
+        var sprite = THREE.ImageUtils.loadTexture( "/images/ball.png" );
         var material = new THREE.ParticleSystemMaterial(  { size: 1, sizeAttenuation: true, map: sprite, transparent: true }  );
         material.color.setHSL( 1.0, 0.2, 0.7 );
 

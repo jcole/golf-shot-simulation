@@ -5,8 +5,10 @@
         var initPoint = new ShotPoint();
         initPoint.position = new THREE.Vector3(0,0,0);
 
+        options = options || {};
+
         // simulation properties
-        this.dt = options.dt; //seconds
+        this.dt = options.dt || 0.001; //seconds
 
         // golf ball properties
         this.mass = 0.0459; // kg; from 1.62 ounces
@@ -22,11 +24,11 @@
         this.airDensity = 1.2041; // kg/m^3
 
         // initial shot attributes
-        this.initSpeedMPH = options.initSpeedMPH;
-        this.initVerticalAngleDegrees = options.initVerticalAngleDegrees;
-        this.initHorizontalAngleDegrees = options.initHorizontalAngleDegrees;
-        this.initBackspinRPM = options.initBackspinRPM;
-        this.initSpinAngle = options.initSpinAngle;
+        this.initSpeedMPH = options.initSpeedMPH || 150.0;
+        this.initVerticalAngleDegrees = options.initVerticalAngleDegrees || 45.0;
+        this.initHorizontalAngleDegrees = options.initHorizontalAngleDegrees || 0.0;
+        this.initBackspinRPM = options.initBackspinRPM || 0.0;
+        this.initSpinAngle = options.initSpinAngle || 0.0;
 
         // initial velocity        
         initPoint.velocity = this.getInitialVelocity(this.initSpeedMPH, this.initVerticalAngleDegrees, this.initHorizontalAngleDegrees);
