@@ -37,11 +37,6 @@ var statusElementHeight;
 var statusElementDistance;
 var statusElementSpin;
 
-// physics converstions
-var metersToYards = 1.09361;
-var metersPerSecToMPH = 2.23694;
-var radiansPerSecondToRPM = 9.54929659;
-
 function init() {
     // add renderer
     renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -189,7 +184,7 @@ function updateShot() {
         if (point == null) {
             return;
         }
-        var convertedPosition = point.position.clone().multiplyScalar(metersToYards); // convert meters to yards
+        var convertedPosition = point.position.clone().multiplyScalar(toYards(1)); // convert meters to yards
         points.push(convertedPosition);
 
         // draw interpolated line
@@ -200,10 +195,10 @@ function updateShot() {
         scene.add(line);
 
         statusElementTime.innerHTML =  (displayTimeElapsed / 1000).toFixed(1) + ' s';
-        statusElementSpeed.innerHTML =  (point.velocity.length() * metersPerSecToMPH).toFixed(1) + ' mph';
+        statusElementSpeed.innerHTML =  toMPH(point.velocity.length()).toFixed(1) + ' mph';
         statusElementHeight.innerHTML =  convertedPosition.y.toFixed(0) + ' yds';
         statusElementDistance.innerHTML =  convertedPosition.z.toFixed(0) + ' yds';
-        statusElementSpin.innerHTML =  (point.angularVelocity.length() * radiansPerSecondToRPM).toFixed(0) + ' rpm';
+        statusElementSpin.innerHTML =  toRPM(point.angularVelocity.length()).toFixed(0) + ' rpm';
 
         // for adding particles
         // if (points.length % 10 == 0) {

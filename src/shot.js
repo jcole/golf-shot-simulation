@@ -10,6 +10,7 @@
         // golf ball properties
         this.mass = 0.0459; // kg; from 1.62 ounces
         this.crossSectionalArea = 0.04267 * Math.PI / 4; //m^2
+        this.smashFactor = (options.smashFactor == null) ? 1.49 : options.smashFactor; // clubhead-to-ball-initial speed ratio
 
         // nature
         this.gravityMagnitude = -9.8; // 9.8 m/s^2
@@ -31,7 +32,7 @@
         this.dt = options.dt || 0.001; //seconds
 
         // initial velocity        
-        initPoint.velocity = this.getInitialVelocity(this.initSpeedMPH, this.initVerticalAngleDegrees, this.initHorizontalAngleDegrees);
+        initPoint.velocity = this.getInitialVelocity(this.initSpeedMPH, this.smashFactor, this.initVerticalAngleDegrees, this.initHorizontalAngleDegrees);
 
         // initial angular velocity (spin rate)
         initPoint.angularVelocity = this.getInitialSpin(this.initBackspinRPM, this.initSpinAngle);
@@ -49,13 +50,15 @@
         return spin;
     }
 
-    Shot.prototype.getInitialVelocity = function(speedMPH, verticalDegrees, horizontalDegrees) {    
+    Shot.prototype.getInitialVelocity = function(speedMPH, smashFactor, verticalDegrees, horizontalDegrees) {    
         var velocity = new THREE.Vector3(0, 0, 0);
         velocity.x = Math.sin(-1 * horizontalDegrees * Math.PI / 180);
         velocity.y = Math.sin(verticalDegrees * Math.PI / 180);
         velocity.z = Math.cos(verticalDegrees * Math.PI / 180);
 
-        return velocity.normalize().multiplyScalar(speedMPH * 0.44704); // MPH to mps
+        var ballSpeed = toMPS(speedMPH * smashFactor);        
+
+        return velocity.normalize().multiplyScalar(ballSpeed);
     }
 
     Shot.prototype.projectShot = function(initPoint) {    
