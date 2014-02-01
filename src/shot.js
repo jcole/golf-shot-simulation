@@ -7,28 +7,28 @@
 
         options = options || {};
 
-        // simulation properties
-        this.dt = options.dt || 0.001; //seconds
-
         // golf ball properties
         this.mass = 0.0459; // kg; from 1.62 ounces
         this.crossSectionalArea = 0.04267 * Math.PI / 4; //m^2
-
-        // golf ball aerodynamics properties
-        this.dragCoefficient = 0.4; //options.dragCoefficient;
-        this.liftCoefficient = 0.00001; // made this up?
-        this.spinDecayRateConstant = 23; // made this up?
 
         // nature
         this.gravityMagnitude = -9.8; // 9.8 m/s^2
         this.airDensity = 1.2041; // kg/m^3
 
+        // golf ball aerodynamics properties        
+        this.dragCoefficient = (options.dragCoefficient == null) ? 0.4 : options.dragCoefficient;
+        this.liftCoefficient = (options.liftCoefficient == null) ? 0.00001 : options.liftCoefficient; // made this up?
+        this.spinDecayRateConstant = 23; // made this up?
+
         // initial shot attributes
-        this.initSpeedMPH = options.initSpeedMPH || 150.0;
-        this.initVerticalAngleDegrees = options.initVerticalAngleDegrees || 45.0;
+        this.initSpeedMPH = options.initSpeedMPH || 0.0;
+        this.initVerticalAngleDegrees = options.initVerticalAngleDegrees || 0.0;
         this.initHorizontalAngleDegrees = options.initHorizontalAngleDegrees || 0.0;
         this.initBackspinRPM = options.initBackspinRPM || 0.0;
         this.initSpinAngle = options.initSpinAngle || 0.0;
+
+        // simulation properties
+        this.dt = options.dt || 0.001; //seconds
 
         // initial velocity        
         initPoint.velocity = this.getInitialVelocity(this.initSpeedMPH, this.initVerticalAngleDegrees, this.initHorizontalAngleDegrees);
@@ -63,11 +63,8 @@
         var lastPoint = initPoint.clone();
         this.points.push(lastPoint); 
 
-        var interpolationSize = 0.25 / this.dt; // record every half-second
-
         while(true) {
             var newPoint = lastPoint.clone();
-            this.points.push(newPoint); 
 
             // calculate velcoity change            
             var accel = this.getAcceleration(lastPoint);
@@ -77,6 +74,8 @@
             // calculate spin rate decay
             var decayRate = this.angularDecayVector(newPoint);
             newPoint.angularVelocity.add(decayRate);
+
+            this.points.push(newPoint); 
 
             if (newPoint.position.y <= 0) {
                 break;
