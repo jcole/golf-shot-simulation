@@ -1,6 +1,6 @@
 # Golf Shot Simulation
 
-![Golf Shot Simulation](https://dl.dropboxusercontent.com/u/68151165/jcole-golf-shot-simulation.png)
+![Golf Shot Simulation](https://drive.google.com/open?id=1M7qFPVbVEZx7B1f6o10POam0sVUyoZx2)
 
 A visualization of golf shot physics using three.js.
 
