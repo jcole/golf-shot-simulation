@@ -4,6 +4,8 @@
 
 A visualization of golf shot physics using three.js.
 
+[Try it out!](http://jeff-cole-projects.herokuapp.com/golf_shot_simulation)
+
 ## Description
 
 This project simulates the trajectory of a golf shot based on the following input parameters:
